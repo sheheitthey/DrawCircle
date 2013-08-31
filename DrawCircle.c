@@ -37,14 +37,28 @@ $CC $CFLAGS -x c -o "$BIN_NAME" - $LDFLAGS << '__END_SOURCE' && run_prog $@ \
 /* C source begins here. */
 #include<gtk/gtk.h>
 
+/*
+ * Draw a pixel at Cartesian coordinates (x, y).
+ *
+ * This is implemented below, and you shouldn't need to worry about it.
+ */
 static void
 DrawPixel(int x, int y);
 
+/*
+ * Draw a circle of radius r centered at Cartesian coordinates (0, 0).
+ *
+ * Implement this in terms of DrawPixel, without doing any floating point
+ * arithmetic.
+ */
 static void
 DrawCircle(int r)
 {
     int i;
 
+    /*
+     * Example usage of DrawPixel. This does NOT draw a circle.
+     */
     for (i = -r; i <= r; i++)
     {
         DrawPixel(r, i);
@@ -54,6 +68,9 @@ DrawCircle(int r)
     }
 }
 
+/*
+ * Draw a few circles to test DrawCircle.
+ */
 static void
 DrawCircles()
 {
