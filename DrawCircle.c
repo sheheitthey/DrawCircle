@@ -1,3 +1,23 @@
+#!/bin/sh
+# Self-compiling program. Just set execute bit and run.
+
+PROG_NAME="DrawCircle"
+
+CC="gcc"
+RM="rm"
+PKG_CONFIG="pkg-config"
+
+CFLAGS="-ansi -pedantic -Wall"
+LDFLAGS=""
+PKG_CONFIG_DEPS="gtk+-2.0"
+
+BIN_NAME=`mktemp /tmp/${PROG_NAME}.XXXXXXXXXX` || exit 1;
+
+CFLAGS="${CFLAGS} `$PKG_CONFIG --cflags $PKG_CONFIG_DEPS`"
+LDFLAGS="${LDFLAGS} `$PKG_CONFIG --libs $PKG_CONFIG_DEPS`"
+$CC $CFLAGS -x c -o "$BIN_NAME" - $LDFLAGS << '__END_SOURCE'
+
+/* C source begins here. */
 #include<gtk/gtk.h>
 
 static void
@@ -113,3 +133,14 @@ int main(int argc, char **argv)
 
     return 0;
 }
+
+/* C source ends here. */
+
+__END_SOURCE
+if [ -x "$BIN_NAME" ]; then
+    $BIN_NAME "$@"
+    $RM "$BIN_NAME"
+else
+    echo "Unexpected: '${BIN_NAME}' not executable."
+    exit 1
+fi
