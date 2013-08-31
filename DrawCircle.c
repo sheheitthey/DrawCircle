@@ -13,9 +13,24 @@ PKG_CONFIG_DEPS="gtk+-2.0"
 
 BIN_NAME=`mktemp /tmp/${PROG_NAME}.XXXXXXXXXX` || exit 1;
 
+run_prog()
+{
+    if [ -x "$BIN_NAME" ]; then
+        $BIN_NAME $@
+        status="$?"
+    else
+        echo "Unexpected: '${BIN_NAME}' not executable."
+        status=1
+    fi
+
+    $RM $BIN_NAME
+    exit $status
+}
+
 CFLAGS="${CFLAGS} `$PKG_CONFIG --cflags $PKG_CONFIG_DEPS`"
 LDFLAGS="${LDFLAGS} `$PKG_CONFIG --libs $PKG_CONFIG_DEPS`"
-$CC $CFLAGS -x c -o "$BIN_NAME" - $LDFLAGS << '__END_SOURCE'
+
+$CC $CFLAGS -x c -o "$BIN_NAME" - $LDFLAGS << '__END_SOURCE' && run_prog $@
 
 /* C source begins here. */
 #include<gtk/gtk.h>
@@ -133,14 +148,3 @@ int main(int argc, char **argv)
 
     return 0;
 }
-
-/* C source ends here. */
-
-__END_SOURCE
-if [ -x "$BIN_NAME" ]; then
-    $BIN_NAME "$@"
-    $RM "$BIN_NAME"
-else
-    echo "Unexpected: '${BIN_NAME}' not executable."
-    exit 1
-fi
