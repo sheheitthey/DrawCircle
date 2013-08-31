@@ -1,5 +1,6 @@
 #!/bin/sh
 # Self-compiling program. Just set execute bit and run.
+#/*
 
 PROG_NAME="DrawCircle"
 
@@ -30,7 +31,8 @@ run_prog()
 CFLAGS="${CFLAGS} `$PKG_CONFIG --cflags $PKG_CONFIG_DEPS`"
 LDFLAGS="${LDFLAGS} `$PKG_CONFIG --libs $PKG_CONFIG_DEPS`"
 
-$CC $CFLAGS -x c -o "$BIN_NAME" - $LDFLAGS << '__END_SOURCE' && run_prog $@
+$CC $CFLAGS -x c -o "$BIN_NAME" - $LDFLAGS << '__END_SOURCE' && run_prog $@ \
+#*/
 
 /* C source begins here. */
 #include<gtk/gtk.h>
